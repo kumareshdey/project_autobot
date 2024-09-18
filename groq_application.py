@@ -59,26 +59,35 @@ def interact(ctx, speaker):
         st.chat_message("Batman", avatar=batman_avatar).write(ctx)
     return ctx
 
+# Stop button to halt conversation generation
 if st.button("Stop", key="stop"):
     st.session_state.stop_chat = True
 
+# Display the chat history before new input is processed
 for entry in st.session_state.history:
     st.chat_message(entry['sender'], avatar=spiderman_avatar if entry['sender'] == "Spiderman" else batman_avatar).write(entry['message'])
 
 if user_input and not st.session_state.stop_chat:
     i = 0
-    while i <= 5:
+    while i < 5:
         user_input = interact(user_input, 'spiderman')
         
         if st.session_state.stop_chat:
             break
         time.sleep(8)
+
         user_input = interact(user_input, 'batman')
-        
+
         if st.session_state.stop_chat:
             break
         time.sleep(8)
+
         i += 1
 
+    # Display the message after the loop ends
+    if i == 5:
+        st.write("You have reached the maximum of 10 conversations for now.")
+
+# If the chat was stopped, keep the stop message intact without resetting the state
 if st.session_state.stop_chat:
     st.write("Chat stopped by the moderator.")
